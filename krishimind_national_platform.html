@@ -1,0 +1,559 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--g50:#EAF3DE;--g100:#C0DD97;--g200:#97C459;--g400:#639922;--g600:#3B6D11;--g800:#27500A;--g900:#173404;
+--a50:#FAEEDA;--a100:#FAC775;--a400:#BA7517;--a600:#854F0B;
+--r50:#FCEBEB;--r100:#F7C1C1;--r400:#E24B4A;--r600:#A32D2D;
+--b50:#E6F1FB;--b400:#378ADD;--b600:#185FA5;
+--brand:#1A6B3A;--brandlt:#2ECC71;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:transparent}
+.wrap{padding:0 0 2rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem 0.75rem;border-bottom:1px solid var(--color-border-tertiary)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:18px;height:18px;fill:white}
+.logo-name{font-size:18px;font-weight:600;color:var(--color-text-primary);letter-spacing:-0.3px}
+.logo-tag{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.live-badge{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary)}
+.live-dot{width:7px;height:7px;background:#2ECC71;border-radius:50%;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.tabs{display:flex;gap:0;padding:0 1.25rem;border-bottom:1px solid var(--color-border-tertiary);overflow-x:auto}
+.tab{padding:0.7rem 1.1rem;font-size:13px;font-weight:500;cursor:pointer;color:var(--color-text-secondary);border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;user-select:none}
+.tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.tab:hover:not(.active){color:var(--color-text-primary)}
+.view{display:none;padding:1.25rem}
+.view.active{display:block}
+.sec-title{font-size:13px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:0.75rem}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:1rem 1.1rem}
+.metric-card{background:var(--color-background-secondary);border-radius:8px;padding:0.85rem 1rem}
+.metric-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.metric-val{font-size:22px;font-weight:600;color:var(--color-text-primary)}
+.crop-card{cursor:pointer;border:1px solid var(--color-border-tertiary);border-radius:10px;padding:0.85rem 1rem;transition:border-color .15s,background .15s;background:var(--color-background-primary)}
+.crop-card:hover,.crop-card.sel{border-color:var(--brand);background:var(--g50)}
+.crop-card.sel{border-width:1.5px}
+.crop-name{font-size:14px;font-weight:600;color:var(--color-text-primary)}
+.crop-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.price-big{font-size:26px;font-weight:700;color:var(--color-text-primary);margin-top:6px}
+.price-unit{font-size:11px;color:var(--color-text-secondary);font-weight:400}
+.chg{font-size:12px;font-weight:500;padding:2px 7px;border-radius:20px;display:inline-block;margin-top:4px}
+.up{background:var(--g50);color:var(--g600)}
+.dn{background:var(--r50);color:var(--r600)}
+.flat{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.conf-bar{height:5px;background:var(--color-border-tertiary);border-radius:3px;margin-top:8px;overflow:hidden}
+.conf-fill{height:100%;border-radius:3px;background:var(--brandlt)}
+.detail-panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:1.25rem;margin-top:1rem}
+.rec-box{border-radius:8px;padding:0.85rem 1rem;margin-bottom:1rem}
+.rec-wait{background:var(--a50);border-left:3px solid var(--a400)}
+.rec-sell{background:var(--g50);border-left:3px solid var(--g400)}
+.rec-title{font-size:14px;font-weight:600}
+.rec-wait .rec-title{color:var(--a600)}
+.rec-sell .rec-title{color:var(--g600)}
+.rec-body{font-size:12px;color:var(--color-text-secondary);margin-top:3px}
+.mandi-row{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:0;align-items:center;padding:0.55rem 0.75rem;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px}
+.mandi-row:last-child{border-bottom:none}
+.mandi-head{background:var(--color-background-secondary);font-weight:600;font-size:11px;color:var(--color-text-secondary);border-radius:6px 6px 0 0}
+.best-mandi{background:var(--g50)}
+.badge{font-size:10px;padding:2px 6px;border-radius:10px;font-weight:500}
+.badge-green{background:var(--g100);color:var(--g800)}
+.badge-amber{background:var(--a100);color:var(--a600)}
+.badge-red{background:var(--r100);color:var(--r600)}
+.badge-blue{background:var(--b50);color:var(--b600)}
+.alert-item{display:flex;align-items:flex-start;gap:10px;padding:0.7rem 0.85rem;border-radius:8px;margin-bottom:8px}
+.alert-warn{background:var(--a50);border:0.5px solid var(--a100)}
+.alert-good{background:var(--g50);border:0.5px solid var(--g100)}
+.alert-bad{background:var(--r50);border:0.5px solid var(--r100)}
+.alert-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.alert-dot-warn{background:var(--a400)}
+.alert-dot-good{background:var(--g400)}
+.alert-dot-bad{background:var(--r400)}
+.alert-title{font-size:13px;font-weight:600;color:var(--color-text-primary)}
+.alert-body{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.state-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 0.8fr;gap:0;padding:0.55rem 0.75rem;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;align-items:center}
+.state-head{background:var(--color-background-secondary);font-size:11px;font-weight:600;color:var(--color-text-secondary);border-radius:6px 6px 0 0}
+.progress{height:6px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px}
+.chart-wrap{position:relative;width:100%;height:220px;margin-top:0.75rem}
+.chart-wrap2{position:relative;width:100%;height:260px;margin-top:0.75rem}
+.chart-wrap3{position:relative;width:100%;height:300px;margin-top:0.75rem}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:6px;font-size:12px;color:var(--color-text-secondary)}
+.leg-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+.section-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+@media(max-width:600px){.section-row{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:0.5rem}
+.forecast-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:0.75rem}
+.fc-day{background:var(--color-background-secondary);border-radius:8px;padding:0.5rem 0.4rem;text-align:center}
+.fc-day.today{background:var(--g50);border:1px solid var(--g200)}
+.fc-d{font-size:10px;color:var(--color-text-secondary)}
+.fc-p{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-top:2px}
+.fc-arr{font-size:12px;margin-top:1px}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:1rem 0}
+.globe-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:0;padding:0.55rem 0.75rem;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;align-items:center}
+.globe-head{background:var(--color-background-secondary);font-size:11px;font-weight:600;color:var(--color-text-secondary);border-radius:6px 6px 0 0}
+.mini-sparkline{display:flex;align-items:flex-end;gap:2px;height:24px}
+.spark-bar{width:5px;border-radius:1px 1px 0 0}
+</style>
+
+<div class="wrap">
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.5 2 6 5 6 8c0 4 4 7 6 10 2-3 6-6 6-10 0-3-2.5-6-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z"/></svg>
+    </div>
+    <div>
+      <div class="logo-name">KrishiMind</div>
+      <div class="logo-tag">National AI Commodity Intelligence Platform</div>
+    </div>
+  </div>
+  <div class="live-badge">
+    <div class="live-dot"></div>
+    <span>Live — 7,240 mandis</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('farmer')">Farmer View</div>
+  <div class="tab" onclick="switchTab('trader')">Trader Dashboard</div>
+  <div class="tab" onclick="switchTab('govt')">Government Portal</div>
+  <div class="tab" onclick="switchTab('exporter')">Exporter Suite</div>
+</div>
+
+<div id="farmer" class="view active">
+  <div class="sec-title">Select Crop</div>
+  <div class="grid3" id="crop-grid"></div>
+  <div class="detail-panel" id="detail-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem">
+      <div>
+        <div style="font-size:16px;font-weight:600;color:var(--color-text-primary)" id="d-crop-name">Mustard (Sarson)</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">Rajasthan / MP mandis • Updated 5 min ago</div>
+      </div>
+      <div style="text-align:right">
+        <div class="price-big" id="d-price">₹5,240 <span class="price-unit">/quintal</span></div>
+        <span class="chg up" id="d-chg">+2.4% today</span>
+      </div>
+    </div>
+    <div id="d-rec" class="rec-box rec-wait">
+      <div class="rec-title" id="d-rec-title">WAIT 5–7 DAYS</div>
+      <div class="rec-body" id="d-rec-body">Price predicted to rise ₹180–₹240/quintal. Export demand firm. Confidence: 82%</div>
+    </div>
+    <div class="grid4" style="margin-bottom:1rem">
+      <div class="metric-card"><div class="metric-label">7-Day Forecast</div><div class="metric-val" id="d-7d" style="font-size:16px">₹5,460</div></div>
+      <div class="metric-card"><div class="metric-label">Confidence</div><div class="metric-val" id="d-conf" style="font-size:16px">82%</div></div>
+      <div class="metric-card"><div class="metric-label">MSP</div><div class="metric-val" style="font-size:16px">₹5,650</div></div>
+      <div class="metric-card"><div class="metric-label">Arrivals (qtl)</div><div class="metric-val" id="d-arr" style="font-size:16px">12,400</div></div>
+    </div>
+    <div class="sec-title">7-Day Price Forecast</div>
+    <div class="forecast-grid" id="fc-days"></div>
+    <div class="chart-wrap" id="chart-wrap-1">
+      <canvas id="priceChart"></canvas>
+    </div>
+    <div class="divider"></div>
+    <div class="sec-title">Nearest Mandis — Today's Rates</div>
+    <div style="border:0.5px solid var(--color-border-tertiary);border-radius:8px;overflow:hidden;margin-top:0.25rem">
+      <div class="mandi-row mandi-head"><div>Mandi</div><div>Price ₹/qtl</div><div>Arrivals qtl</div><div>vs Avg</div></div>
+      <div id="mandi-list"></div>
+    </div>
+  </div>
+</div>
+
+<div id="trader" class="view">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="metric-card"><div class="metric-label">Active Mandis</div><div class="metric-val">7,240</div></div>
+    <div class="metric-card"><div class="metric-label">Avg Mustard Price</div><div class="metric-val" style="font-size:16px">₹5,240</div></div>
+    <div class="metric-card"><div class="metric-label">Arbitrage Opportunities</div><div class="metric-val" style="font-size:16px;color:var(--g600)">14</div></div>
+    <div class="metric-card"><div class="metric-label">Price Alerts Today</div><div class="metric-val" style="font-size:16px;color:var(--a400)">6</div></div>
+  </div>
+  <div class="section-row">
+    <div>
+      <div class="sec-title">Multi-Mandi Comparison — Mustard (₹/quintal)</div>
+      <div class="legend">
+        <span><span class="leg-dot" style="background:#3B6D11"></span>Today</span>
+        <span><span class="leg-dot" style="background:#97C459"></span>7-Day Prediction</span>
+        <span><span class="leg-dot" style="background:#FAC775"></span>MSP</span>
+      </div>
+      <div class="chart-wrap2"><canvas id="mandiChart"></canvas></div>
+    </div>
+    <div>
+      <div class="sec-title">Smart Alerts</div>
+      <div id="trader-alerts"></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-title">National Mandi Price Board — Top Mandis by Volume</div>
+  <div style="border:0.5px solid var(--color-border-tertiary);border-radius:8px;overflow:hidden;margin-top:0.5rem">
+    <div class="mandi-row mandi-head" style="grid-template-columns:1.8fr 1fr 1fr 1fr;"><div>Mandi / State</div><div>Crop</div><div>Price ₹/qtl</div><div>Signal</div></div>
+    <div id="board-list"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-title">Arrival Volume Trend — Past 14 Days (All Crops Combined, 000 quintals)</div>
+  <div class="legend">
+    <span><span class="leg-dot" style="background:#639922"></span>Actual Arrivals</span>
+    <span><span class="leg-dot" style="background:#FAC775"></span>5-Year Average</span>
+  </div>
+  <div class="chart-wrap3"><canvas id="arrivalChart"></canvas></div>
+</div>
+
+<div id="govt" class="view">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="metric-card"><div class="metric-label">Mandis below MSP</div><div class="metric-val" style="font-size:16px;color:var(--r400)">847</div></div>
+    <div class="metric-card"><div class="metric-label">States — Price Stress</div><div class="metric-val" style="font-size:16px;color:var(--a400)">4</div></div>
+    <div class="metric-card"><div class="metric-label">NAFED Procurement (MT)</div><div class="metric-val" style="font-size:16px">1.24M</div></div>
+    <div class="metric-card"><div class="metric-label">Crops Forecasted</div><div class="metric-val" style="font-size:16px;color:var(--g600)">7/7</div></div>
+  </div>
+  <div class="section-row">
+    <div>
+      <div class="sec-title">State-wise Price Health Index</div>
+      <div style="border:0.5px solid var(--color-border-tertiary);border-radius:8px;overflow:hidden;margin-top:0.5rem">
+        <div class="state-row state-head"><div>State</div><div>Avg Price ₹</div><div>vs MSP</div><div>Health</div><div>Alert</div></div>
+        <div id="state-list"></div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-title">MSP Adequacy — Current Season</div>
+      <div class="legend" style="margin-top:4px">
+        <span><span class="leg-dot" style="background:#3B6D11"></span>Market > MSP</span>
+        <span><span class="leg-dot" style="background:#E24B4A"></span>Market < MSP</span>
+      </div>
+      <div class="chart-wrap2"><canvas id="mspChart"></canvas></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-title">Commodity Price Forecast — National Average (₹/quintal, 30-day outlook)</div>
+  <div class="legend">
+    <span><span class="leg-dot" style="background:#378ADD"></span>Current</span>
+    <span><span class="leg-dot" style="background:#639922"></span>30-Day Forecast</span>
+    <span><span class="leg-dot" style="background:#E24B4A"></span>MSP</span>
+  </div>
+  <div class="chart-wrap3"><canvas id="govtChart"></canvas></div>
+</div>
+
+<div id="exporter" class="view">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="metric-card"><div class="metric-label">Mustard FOB Kandla</div><div class="metric-val" style="font-size:16px">$612/MT</div></div>
+    <div class="metric-card"><div class="metric-label">Global Premium</div><div class="metric-val" style="font-size:16px;color:var(--g600)">+14.2%</div></div>
+    <div class="metric-card"><div class="metric-label">DGFT Quota Used</div><div class="metric-val" style="font-size:16px;color:var(--a400)">63%</div></div>
+    <div class="metric-card"><div class="metric-label">Export Window</div><div class="metric-val" style="font-size:16px;color:var(--g600)">Open</div></div>
+  </div>
+  <div class="section-row">
+    <div>
+      <div class="sec-title">FOB Price Forecast — India vs Global (USD/MT)</div>
+      <div class="legend">
+        <span><span class="leg-dot" style="background:#3B6D11"></span>India FOB Kandla</span>
+        <span><span class="leg-dot" style="background:#185FA5"></span>CBOT Global Ref</span>
+        <span><span class="leg-dot" style="background:#FAC775"></span>Bangladesh Import</span>
+      </div>
+      <div class="chart-wrap2"><canvas id="fobChart"></canvas></div>
+    </div>
+    <div>
+      <div class="sec-title">Export Intelligence Alerts</div>
+      <div id="export-alerts"></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-title">Destination Market Price Comparison — Mustard / Rapeseed (USD/MT)</div>
+  <div style="border:0.5px solid var(--color-border-tertiary);border-radius:8px;overflow:hidden;margin-top:0.5rem">
+    <div class="globe-row globe-head"><div>Market / Exchange</div><div>Current USD/MT</div><div>30-Day Trend</div><div>India Premium</div></div>
+    <div id="globe-list"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-title">Optimal Sourcing Mandis for Export — Mustard</div>
+  <div style="border:0.5px solid var(--color-border-tertiary);border-radius:8px;overflow:hidden;margin-top:0.5rem">
+    <div class="mandi-row mandi-head" style="grid-template-columns:1.8fr 1fr 1fr 1fr"><div>Mandi</div><div>Price ₹/qtl</div><div>To Kandla (km)</div><div>Net Margin</div></div>
+    <div id="sourcing-list"></div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const crops=[
+{id:'mustard',name:'Mustard',hindi:'Sarson',price:5240,msp:5650,change:2.4,dir:'up',conf:82,arr:12400,rec:'wait',recDays:5,recGain:'₹180–₹240',
+ fcPrices:[5240,5290,5330,5310,5380,5420,5460],
+ mandis:[{name:'Jaipur',price:5280,arr:3200,diff:'+1.8%'},{name:'Kota',price:5240,arr:2800,diff:'+1.1%'},{name:'Alwar',price:5190,arr:1900,diff:'+0.1%'},{name:'Bikaner',price:5150,arr:2400,diff:'-0.8%'},{name:'Nagaur',price:5210,arr:2100,diff:'+0.5%'}]},
+{id:'wheat',name:'Wheat',hindi:'Gehu',price:2640,msp:2275,change:0.8,dir:'up',conf:76,arr:28600,rec:'sell',recDays:0,recGain:'',
+ fcPrices:[2640,2635,2620,2610,2590,2575,2560],
+ mandis:[{name:'Indore',price:2680,arr:8400,diff:'+2.3%'},{name:'Ujjain',price:2650,arr:5200,diff:'+1.1%'},{name:'Bhopal',price:2640,arr:4800,diff:'+0.8%'},{name:'Raipur',price:2610,arr:3600,diff:'-0.4%'},{name:'Nagpur',price:2600,arr:3100,diff:'-0.8%'}]},
+{id:'soybean',name:'Soybean',hindi:'Soya',price:4180,msp:4600,change:-1.2,dir:'dn',conf:71,arr:8900,rec:'wait',recDays:14,recGain:'₹120–₹180',
+ fcPrices:[4180,4160,4140,4180,4230,4280,4310],
+ mandis:[{name:'Indore',price:4210,arr:2800,diff:'+0.7%'},{name:'Latur',price:4180,arr:2200,diff:'0.0%'},{name:'Akola',price:4160,arr:1900,diff:'-0.5%'},{name:'Nandurbar',price:4140,arr:1400,diff:'-1.0%'},{name:'Khandwa',price:4190,arr:1600,diff:'+0.2%'}]},
+{id:'rice',name:'Rice',hindi:'Chawal',price:2180,msp:2183,change:0.2,dir:'flat',conf:68,arr:32400,rec:'sell',recDays:0,recGain:'',
+ fcPrices:[2180,2175,2180,2185,2175,2170,2165],
+ mandis:[{name:'Cuttack',price:2220,arr:7200,diff:'+1.8%'},{name:'Hyderabad',price:2200,arr:6800,diff:'+0.9%'},{name:'Chennai',price:2180,arr:5400,diff:'0.0%'},{name:'Raipur',price:2160,arr:4200,diff:'-0.9%'},{name:'Vizag',price:2170,arr:3800,diff:'-0.5%'}]},
+{id:'maize',name:'Maize',hindi:'Makka',price:1840,msp:2090,change:-0.5,dir:'dn',conf:64,arr:18700,rec:'wait',recDays:21,recGain:'₹80–₹140',
+ fcPrices:[1840,1830,1820,1850,1880,1910,1940],
+ mandis:[{name:'Davangere',price:1860,arr:4400,diff:'+1.1%'},{name:'Gulbarga',price:1850,arr:3800,diff:'+0.5%'},{name:'Nizamabad',price:1840,arr:3200,diff:'0.0%'},{name:'Karimnagar',price:1820,arr:2600,diff:'-1.1%'},{name:'Warangal',price:1830,arr:2100,diff:'-0.5%'}]},
+{id:'cotton',name:'Cotton',hindi:'Kapas',price:5940,msp:6620,change:1.1,dir:'up',conf:73,arr:6200,rec:'wait',recDays:10,recGain:'₹200–₹350',
+ fcPrices:[5940,5980,6040,6080,6120,6160,6180],
+ mandis:[{name:'Rajkot',price:5990,arr:1800,diff:'+0.8%'},{name:'Bhavnagar',price:5960,arr:1600,diff:'+0.3%'},{name:'Akola',price:5940,arr:1200,diff:'0.0%'},{name:'Amravati',price:5910,arr:900,diff:'-0.5%'},{name:'Surendranagar',price:5920,arr:700,diff:'-0.3%'}]},
+{id:'pulses',name:'Tur Dal',hindi:'Arhar',price:7840,msp:7550,change:3.2,dir:'up',conf:79,arr:4800,rec:'sell',recDays:0,recGain:'',
+ fcPrices:[7840,7900,7960,7880,7820,7790,7760],
+ mandis:[{name:'Latur',price:7890,arr:1400,diff:'+0.6%'},{name:'Gulbarga',price:7850,arr:1200,diff:'+0.1%'},{name:'Akola',price:7840,arr:900,diff:'0.0%'},{name:'Nagpur',price:7800,arr:700,diff:'-0.5%'},{name:'Sholapur',price:7820,arr:600,diff:'-0.3%'}]}
+];
+
+let selCrop=crops[0];
+let charts={};
+
+function rupee(n){return'₹'+n.toLocaleString('en-IN')}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(t).classList.add('active');
+  setTimeout(()=>initChartsForTab(t),50);
+}
+
+function renderCropGrid(){
+  const g=document.getElementById('crop-grid');
+  g.innerHTML=crops.map(c=>`
+    <div class="crop-card${c.id===selCrop.id?' sel':''}" onclick="selectCrop('${c.id}')">
+      <div class="crop-name">${c.name}</div>
+      <div class="crop-sub">${c.hindi}</div>
+      <div class="price-big">${rupee(c.price)} <span class="price-unit">/qtl</span></div>
+      <span class="chg ${c.dir==='up'?'up':c.dir==='dn'?'dn':'flat'}">${c.dir==='up'?'+':''}${c.change}% today</span>
+      <div class="conf-bar"><div class="conf-fill" style="width:${c.conf}%"></div></div>
+    </div>`).join('');
+}
+
+function renderDetail(c){
+  document.getElementById('d-crop-name').textContent=c.name+' ('+c.hindi+')';
+  document.getElementById('d-price').innerHTML=rupee(c.price)+' <span class="price-unit">/quintal</span>';
+  document.getElementById('d-chg').className='chg '+(c.dir==='up'?'up':c.dir==='dn'?'dn':'flat');
+  document.getElementById('d-chg').textContent=(c.dir==='up'?'+':'')+c.change+'% today';
+  const rec=document.getElementById('d-rec');
+  rec.className='rec-box '+(c.rec==='sell'?'rec-sell':'rec-wait');
+  document.getElementById('d-rec-title').textContent=c.rec==='sell'?'SELL NOW — PEAK PRICE':'WAIT '+c.recDays+' DAYS';
+  document.getElementById('d-rec-body').textContent=c.rec==='sell'
+    ?`Market price above MSP. Arrivals rising — price likely to soften. Confidence: ${c.conf}%`
+    :`Price predicted to rise ${c.recGain}/quintal. Confidence: ${c.conf}%`;
+  document.getElementById('d-7d').textContent=rupee(c.fcPrices[6]);
+  document.getElementById('d-conf').textContent=c.conf+'%';
+  document.getElementById('d-arr').textContent=c.arr.toLocaleString('en-IN');
+  const days=['Today','Tue','Wed','Thu','Fri','Sat','Sun'];
+  document.getElementById('fc-days').innerHTML=c.fcPrices.map((p,i)=>{
+    const diff=p-c.fcPrices[0];
+    const arr=diff>0?'▲':diff<0?'▼':'—';
+    const col=diff>0?'var(--g600)':diff<0?'var(--r600)':'var(--color-text-secondary)';
+    return`<div class="fc-day${i===0?' today':''}"><div class="fc-d">${days[i]}</div><div class="fc-p">${rupee(p)}</div><div class="fc-arr" style="color:${col}">${arr}</div></div>`;
+  }).join('');
+  const ml=document.getElementById('mandi-list');
+  ml.innerHTML=c.mandis.map((m,i)=>`
+    <div class="mandi-row${i===0?' best-mandi':''}">
+      <div style="font-weight:${i===0?600:400};color:var(--color-text-primary)">${m.name}${i===0?' <span class="badge badge-green">Best Rate</span>':''}</div>
+      <div style="font-weight:600">${rupee(m.price)}</div>
+      <div style="color:var(--color-text-secondary)">${m.arr.toLocaleString('en-IN')}</div>
+      <div class="${m.diff.startsWith('+')?'up':m.diff.startsWith('-')?'dn':'flat'}" style="font-size:12px;border-radius:4px;padding:1px 0">${m.diff}</div>
+    </div>`).join('');
+  renderPriceChart(c);
+}
+
+function selectCrop(id){
+  selCrop=crops.find(c=>c.id===id);
+  renderCropGrid();
+  renderDetail(selCrop);
+}
+
+function renderPriceChart(c){
+  if(charts.price) charts.price.destroy();
+  const ctx=document.getElementById('priceChart').getContext('2d');
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  charts.price=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:days,
+      datasets:[
+        {label:'Predicted Price',data:c.fcPrices,borderColor:'#3B6D11',backgroundColor:'rgba(59,109,17,0.08)',tension:0.4,fill:true,pointRadius:4,pointBackgroundColor:'#3B6D11'},
+        {label:'MSP',data:Array(7).fill(c.msp),borderColor:'#FAC775',borderDash:[5,5],pointRadius:0,tension:0}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>'₹'+v.raw.toLocaleString('en-IN')}}},scales:{y:{ticks:{callback:v=>'₹'+v.toLocaleString('en-IN')},grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false}}}}
+  });
+}
+
+function initChartsForTab(t){
+  if(t==='trader') renderTraderCharts();
+  else if(t==='govt') renderGovtCharts();
+  else if(t==='exporter') renderExporterCharts();
+}
+
+function renderTraderCharts(){
+  if(charts.mandi) charts.mandi.destroy();
+  if(charts.arrival) charts.arrival.destroy();
+  const mandis=['Jaipur','Kota','Alwar','Bikaner','Nagaur','Indore','Ujjain'];
+  const prices=[5280,5240,5190,5150,5210,5160,5200];
+  const preds=[5440,5400,5360,5320,5360,5320,5340];
+  const msps=Array(7).fill(5650);
+  const ctx=document.getElementById('mandiChart').getContext('2d');
+  charts.mandi=new Chart(ctx,{type:'bar',data:{labels:mandis,datasets:[
+    {label:'Today',data:prices,backgroundColor:'#3B6D11',borderRadius:4},
+    {label:'7-Day Pred',data:preds,backgroundColor:'#97C459',borderRadius:4},
+    {label:'MSP',data:msps,type:'line',borderColor:'#FAC775',borderDash:[5,5],pointRadius:0,fill:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'₹'+v.toLocaleString()},grid:{color:'rgba(0,0,0,0.05)'},min:4800},x:{grid:{display:false}}}}});
+  const labels=[...Array(14)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-13+i);return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})});
+  const arr=[182,194,178,201,215,198,226,242,238,254,268,251,244,260];
+  const avg=[195,195,195,195,195,195,195,195,195,195,195,195,195,195];
+  const ctx2=document.getElementById('arrivalChart').getContext('2d');
+  charts.arrival=new Chart(ctx2,{type:'bar',data:{labels,datasets:[
+    {label:'Arrivals',data:arr,backgroundColor:'#639922',borderRadius:3},
+    {label:'5Y Avg',data:avg,type:'line',borderColor:'#FAC775',borderDash:[4,4],pointRadius:0,fill:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false},ticks:{maxRotation:45,autoSkip:false,font:{size:10}}}}}});
+}
+
+function renderGovtCharts(){
+  if(charts.msp) charts.msp.destroy();
+  if(charts.govt) charts.govt.destroy();
+  const crops7=['Mustard','Wheat','Soybean','Rice','Maize','Cotton','Tur Dal'];
+  const cur=[5240,2640,4180,2180,1840,5940,7840];
+  const fc30=[5480,2560,4380,2200,1980,6140,7700];
+  const msp=[5650,2275,4600,2183,2090,6620,7550];
+  const ctx=document.getElementById('mspChart').getContext('2d');
+  const colors=cur.map((v,i)=>v>=msp[i]?'#3B6D11':'#E24B4A');
+  charts.msp=new Chart(ctx,{type:'bar',data:{labels:crops7,datasets:[
+    {label:'Market',data:cur,backgroundColor:colors,borderRadius:4},
+    {label:'MSP',data:msp,type:'line',borderColor:'#378ADD',borderDash:[5,5],pointRadius:3,fill:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'₹'+v.toLocaleString()},grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false},ticks:{font:{size:11}}}}}});
+  const ctx2=document.getElementById('govtChart').getContext('2d');
+  const grouped=[];
+  crops7.forEach((c,i)=>grouped.push(cur[i],fc30[i],msp[i]));
+  charts.govt=new Chart(ctx2,{type:'bar',data:{labels:crops7,datasets:[
+    {label:'Current',data:cur,backgroundColor:'#378ADD',borderRadius:3},
+    {label:'30-Day Forecast',data:fc30,backgroundColor:'#639922',borderRadius:3},
+    {label:'MSP',data:msp,backgroundColor:'rgba(226,75,74,0.5)',borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'₹'+v.toLocaleString()},grid:{color:'rgba(0,0,0,0.05)'}},x:{grid:{display:false}}}}});
+}
+
+function renderExporterCharts(){
+  if(charts.fob) charts.fob.destroy();
+  const months=['Oct','Nov','Dec','Jan','Feb','Mar','Apr(f)','May(f)'];
+  const fobIndia=[565,578,592,601,608,612,620,634];
+  const cbot=[542,556,568,575,582,588,594,604];
+  const bdesh=[590,600,612,618,626,632,640,650];
+  const ctx=document.getElementById('fobChart').getContext('2d');
+  charts.fob=new Chart(ctx,{type:'line',data:{labels:months,datasets:[
+    {label:'India FOB',data:fobIndia,borderColor:'#3B6D11',backgroundColor:'rgba(59,109,17,0.07)',tension:0.4,fill:true,pointRadius:3},
+    {label:'CBOT Ref',data:cbot,borderColor:'#185FA5',tension:0.4,pointRadius:3},
+    {label:'Bangladesh',data:bdesh,borderColor:'#FAC775',tension:0.4,pointRadius:3,borderDash:[5,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v},grid:{color:'rgba(0,0,0,0.05)'},min:500},x:{grid:{display:false}}}}});
+}
+
+function renderTraderAlerts(){
+  const alerts=[
+    {type:'good',title:'Arbitrage — Mustard',body:'Jaipur vs Nagaur: ₹130/qtl difference. 68 km distance. Viable after transport cost.'},
+    {type:'warn',title:'Heavy Arrivals — Wheat, UP',body:'Arrivals up 34% in 3 days. Price pressure expected. Consider delaying procurement in Kanpur.'},
+    {type:'bad',title:'Price Crash Warning — Maize',body:'Karnataka mandis: price down 8% in 7 days. Oversupply from new harvest. Avoid long positions.'},
+    {type:'good',title:'Cotton — Strong Demand',body:'MCX cotton futures up ₹340/bale. Rajkot mandis expected to rise 4–6% this week.'},
+    {type:'warn',title:'Weather Risk — Rajasthan',body:'IMD forecast: below-normal rainfall next 10 days. Monitor mustard sowing progress.'}
+  ];
+  document.getElementById('trader-alerts').innerHTML=alerts.map(a=>`
+    <div class="alert-item alert-${a.type}">
+      <div class="alert-dot alert-dot-${a.type}"></div>
+      <div><div class="alert-title">${a.title}</div><div class="alert-body">${a.body}</div></div>
+    </div>`).join('');
+}
+
+function renderBoard(){
+  const rows=[
+    {mandi:'Jaipur, Rajasthan',crop:'Mustard',price:5280,sig:'up',badge:'buy'},
+    {mandi:'Indore, MP',crop:'Wheat',price:2680,sig:'up',badge:'sell'},
+    {mandi:'Latur, Maharashtra',crop:'Tur Dal',price:7890,sig:'up',badge:'sell'},
+    {mandi:'Rajkot, Gujarat',crop:'Cotton',price:5990,sig:'up',badge:'buy'},
+    {mandi:'Davangere, Karnataka',crop:'Maize',price:1860,sig:'dn',badge:'hold'},
+    {mandi:'Cuttack, Odisha',crop:'Rice',price:2220,sig:'flat',badge:'sell'},
+    {mandi:'Latur, Maharashtra',crop:'Soybean',price:4210,sig:'dn',badge:'hold'},
+    {mandi:'Ludhiana, Punjab',crop:'Wheat',price:2720,sig:'up',badge:'sell'},
+  ];
+  document.getElementById('board-list').innerHTML=rows.map((r,i)=>`
+    <div class="mandi-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr">
+      <div style="color:var(--color-text-primary);font-weight:500">${r.mandi}</div>
+      <div style="color:var(--color-text-secondary)">${r.crop}</div>
+      <div style="font-weight:600">${rupee(r.price)}</div>
+      <div><span class="badge ${r.badge==='sell'?'badge-green':r.badge==='buy'?'badge-blue':'badge-amber'}">${r.badge.toUpperCase()}</span></div>
+    </div>`).join('');
+}
+
+function renderStates(){
+  const states=[
+    {state:'Rajasthan',crop:'Mustard',avg:5220,msp:5650,health:78,alert:'ok'},
+    {state:'Madhya Pradesh',crop:'Wheat/Soy',avg:4110,msp:4300,health:82,alert:'ok'},
+    {state:'Maharashtra',crop:'Soybean',avg:4180,msp:4600,health:61,alert:'warn'},
+    {state:'Punjab',crop:'Wheat',avg:2720,msp:2275,health:95,alert:'ok'},
+    {state:'Karnataka',crop:'Maize',avg:1850,msp:2090,health:44,alert:'bad'},
+    {state:'Gujarat',crop:'Cotton',avg:5960,msp:6620,health:58,alert:'warn'},
+    {state:'Odisha',crop:'Rice',avg:2180,msp:2183,health:72,alert:'ok'},
+    {state:'Uttar Pradesh',crop:'Wheat',avg:2640,msp:2275,health:89,alert:'ok'},
+  ];
+  document.getElementById('state-list').innerHTML=states.map((s,i)=>`
+    <div class="state-row">
+      <div style="font-weight:500;color:var(--color-text-primary)">${s.state}</div>
+      <div style="color:var(--color-text-secondary)">${rupee(s.avg)}</div>
+      <div><span class="badge ${s.avg>=s.msp?'badge-green':'badge-red'}">${s.avg>=s.msp?'Above':'Below'}</span></div>
+      <div><div class="progress" style="width:90px"><div class="progress-fill" style="width:${s.health}%;background:${s.health>75?'#3B6D11':s.health>55?'#BA7517':'#E24B4A'}"></div></div></div>
+      <div><span class="badge ${s.alert==='ok'?'badge-green':s.alert==='warn'?'badge-amber':'badge-red'}">${s.alert==='ok'?'OK':s.alert==='warn'?'WATCH':'ALERT'}</span></div>
+    </div>`).join('');
+}
+
+function renderExportAlerts(){
+  const alerts=[
+    {type:'good',title:'Export Window Open — Mustard',body:'Bangladesh tender active. 25,000 MT demand. India FOB at 3% discount to Argentina.'},
+    {type:'warn',title:'Quota Utilisation — Wheat',body:'DGFT wheat export quota 63% utilised. Apply now before Q1 quota closes.'},
+    {type:'good',title:'UAE Market — Tur Dal',body:'Dubai demand up 18%. Sri Lanka import tender open. Suggest booking 500 MT.'},
+    {type:'warn',title:'Freight Rate Rise',body:'Baltic Dry Index up 12% this month. Factor higher logistics cost into FOB pricing.'},
+  ];
+  document.getElementById('export-alerts').innerHTML=alerts.map(a=>`
+    <div class="alert-item alert-${a.type}">
+      <div class="alert-dot alert-dot-${a.type}"></div>
+      <div><div class="alert-title">${a.title}</div><div class="alert-body">${a.body}</div></div>
+    </div>`).join('');
+}
+
+function renderGlobeList(){
+  const rows=[
+    {market:'CBOT Chicago (Canola ref.)',price:588,trend:[560,565,572,580,588],premium:'+4.1%'},
+    {market:'Bursa Malaysia (Palm ref.)',price:524,trend:[510,508,515,520,524],premium:'+16.8%'},
+    {market:'Bangladesh (Import tender)',price:632,trend:[618,622,626,628,632],premium:'-3.2%'},
+    {market:'UAE Dubai (Spot)',price:619,trend:[608,610,614,617,619],premium:'-1.1%'},
+    {market:'MATIF Paris (Rapeseed)',price:576,trend:[568,570,573,575,576],premium:'+6.3%'},
+  ];
+  function sparks(data){
+    const mx=Math.max(...data),mn=Math.min(...data),range=mx-mn||1;
+    return`<div class="mini-sparkline">${data.map(v=>`<div class="spark-bar" style="height:${Math.round(((v-mn)/range)*18)+4}px;background:#639922"></div>`).join('')}</div>`;
+  }
+  document.getElementById('globe-list').innerHTML=rows.map((r,i)=>`
+    <div class="globe-row" style="${i%2===1?'background:var(--color-background-secondary)':''}">
+      <div style="font-weight:500;color:var(--color-text-primary)">${r.market}</div>
+      <div style="font-weight:600">$${r.price}/MT</div>
+      <div>${sparks(r.trend)}</div>
+      <div><span class="badge ${r.premium.startsWith('+')?'badge-green':'badge-red'}">${r.premium}</span></div>
+    </div>`).join('');
+}
+
+function renderSourcingList(){
+  const rows=[
+    {mandi:'Jaipur, Rajasthan',price:5280,dist:780,margin:'₹1,840/MT'},
+    {mandi:'Kota, Rajasthan',price:5240,dist:820,margin:'₹1,780/MT'},
+    {mandi:'Alwar, Rajasthan',price:5190,dist:740,margin:'₹1,720/MT'},
+    {mandi:'Bikaner, Rajasthan',price:5150,dist:960,margin:'₹1,600/MT'},
+    {mandi:'Nagaur, Rajasthan',price:5210,dist:880,margin:'₹1,680/MT'},
+  ];
+  document.getElementById('sourcing-list').innerHTML=rows.map((r,i)=>`
+    <div class="mandi-row" style="grid-template-columns:1.8fr 1fr 1fr 1fr${i===0?';background:var(--g50)':''}">
+      <div style="font-weight:${i===0?600:400};color:var(--color-text-primary)">${r.mandi}${i===0?' <span class="badge badge-green">Best</span>':''}</div>
+      <div style="font-weight:600">${rupee(r.price)}</div>
+      <div style="color:var(--color-text-secondary)">${r.dist} km</div>
+      <div style="font-weight:500;color:var(--g600)">${r.margin}</div>
+    </div>`).join('');
+}
+
+renderCropGrid();
+renderDetail(selCrop);
+renderTraderAlerts();
+renderBoard();
+renderStates();
+renderExportAlerts();
+renderGlobeList();
+renderSourcingList();
+</script>
