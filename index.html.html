@@ -1,0 +1,712 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--g50:#EAF3DE;--g100:#C0DD97;--g200:#97C459;--g400:#639922;--g600:#3B6D11;--g800:#27500A;
+--a50:#FAEEDA;--a100:#FAC775;--a200:#EF9F27;--a400:#BA7517;--a600:#854F0B;
+--r50:#FCEBEB;--r100:#F7C1C1;--r400:#E24B4A;--r600:#A32D2D;
+--b50:#E6F1FB;--b100:#B5D4F4;--b400:#378ADD;--b600:#185FA5;
+--p50:#EEEDFE;--p100:#CECBF6;--p400:#7F77DD;--p600:#534AB7;
+--t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;
+--brand:#1A6B3A;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:transparent}
+.wrap{padding-bottom:2rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(--color-border-tertiary)}
+.tabs{display:flex;gap:0;padding:0 1.25rem;border-bottom:1px solid var(--color-border-tertiary);overflow-x:auto}
+.tab{padding:.65rem 1rem;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--color-text-secondary);border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;user-select:none}
+.tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.tab:hover:not(.active){color:var(--color-text-primary)}
+.view{display:none;padding:1.1rem 1.25rem}
+.view.active{display:block}
+.sec{font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.6rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:12px;padding:1rem 1.1rem}
+.mc{background:var(--color-background-secondary);border-radius:8px;padding:.75rem .9rem}
+.mc-lbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+.mc-val{font-size:20px;font-weight:600;color:var(--color-text-primary)}
+.mc-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;display:inline-block}
+.bg{background:var(--g100);color:var(--g800)}
+.ba{background:var(--a100);color:var(--a600)}
+.br{background:var(--r100);color:var(--r600)}
+.bb{background:var(--b100);color:var(--b600)}
+.bp{background:var(--p100);color:var(--p600)}
+.bt{background:var(--t100);color:var(--t600)}
+.divider{height:.5px;background:var(--color-border-tertiary);margin:.9rem 0}
+.tbl{border:.5px solid var(--color-border-tertiary);border-radius:8px;overflow:hidden}
+.row{display:grid;align-items:center;padding:.5rem .7rem;border-bottom:.5px solid var(--color-border-tertiary);font-size:12.5px}
+.row:last-child{border-bottom:none}
+.th{background:var(--color-background-secondary);font-size:11px;font-weight:600;color:var(--color-text-secondary);border-radius:6px 6px 0 0}
+.ch{position:relative;width:100%;height:220px}
+.ch2{position:relative;width:100%;height:260px}
+.ch3{position:relative;width:100%;height:300px}
+.leg{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:5px;font-size:11.5px;color:var(--color-text-secondary)}
+.ld{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:3px;vertical-align:middle}
+.pulse{width:7px;height:7px;border-radius:50%;display:inline-block;animation:pls 1.4s infinite}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.25}}
+/* Phase timeline */
+.phase-wrap{display:flex;flex-direction:column;gap:0;margin-top:.5rem}
+.phase-item{display:grid;grid-template-columns:90px 28px 1fr;align-items:stretch;gap:0}
+.phase-label{text-align:right;padding:.6rem .75rem 0 0;font-size:11px;color:var(--color-text-secondary)}
+.phase-line{display:flex;flex-direction:column;align-items:center}
+.phase-dot{width:14px;height:14px;border-radius:50%;border:2px solid;margin-top:6px;flex-shrink:0;z-index:1}
+.phase-connector{width:2px;flex:1;margin-top:0}
+.phase-content{padding:.5rem 0 1rem .85rem}
+.phase-title{font-size:13px;font-weight:600;color:var(--color-text-primary)}
+.phase-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.phase-tasks{margin-top:.5rem;display:flex;flex-direction:column;gap:4px}
+.ptask{font-size:11.5px;display:flex;align-items:flex-start;gap:6px;color:var(--color-text-primary)}
+.ptask-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0}
+/* Code block */
+.code-block{background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);border-radius:8px;padding:.75rem 1rem;font-family:monospace;font-size:11.5px;color:var(--color-text-primary);line-height:1.8;overflow-x:auto;white-space:pre}
+.code-comment{color:var(--color-text-secondary)}
+.code-key{color:var(--b600)}
+.code-val{color:var(--g600)}
+.code-str{color:var(--a400)}
+/* Cost calc */
+.cost-row{display:flex;align-items:center;justify-content:space-between;padding:.45rem 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12.5px}
+.cost-row:last-child{border-bottom:none}
+/* Infra cards */
+.infra-card{border:.5px solid var(--color-border-tertiary);border-radius:10px;padding:.85rem 1rem;margin-bottom:8px}
+.infra-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem}
+.infra-name{font-size:13px;font-weight:600;color:var(--color-text-primary)}
+.infra-spec{font-size:11px;color:var(--color-text-secondary)}
+.bar{height:7px;background:var(--color-border-tertiary);border-radius:4px;overflow:hidden;margin-top:5px}
+.bar-fill{height:100%;border-radius:4px}
+/* API endpoint */
+.api-block{background:var(--color-background-secondary);border-radius:8px;padding:.7rem .9rem;margin-bottom:8px;border-left:3px solid var(--b400)}
+.api-method{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;display:inline-block;font-family:monospace}
+.get{background:var(--g50);color:var(--g600)}
+.post{background:var(--b50);color:var(--b600)}
+.api-path{font-family:monospace;font-size:12px;font-weight:600;color:var(--color-text-primary);margin-left:6px}
+.api-desc{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+/* Monitoring */
+.mon-row{display:flex;align-items:center;gap:10px;padding:.4rem 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.mon-row:last-child{border-bottom:none}
+.mon-name{font-size:12.5px;color:var(--color-text-primary);width:180px;flex-shrink:0}
+.mon-val{font-size:12.5px;font-weight:600;width:80px}
+.mon-bar{flex:1;height:6px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden}
+.mon-fill{height:100%;border-radius:3px}
+.mon-status{width:50px;text-align:right}
+/* Retrain */
+.retrain-step{display:flex;align-items:flex-start;gap:10px;padding:.55rem 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.retrain-step:last-child{border-bottom:none}
+.rs-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.rs-title{font-size:12.5px;font-weight:600;color:var(--color-text-primary)}
+.rs-body{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+/* Cost slider */
+.slider-wrap{margin:.75rem 0}
+input[type=range]{width:100%}
+.cost-summary{background:var(--g50);border-radius:8px;padding:.75rem 1rem;margin-top:.6rem;display:flex;justify-content:space-between;align-items:center}
+</style>
+
+<div class="wrap">
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:30px;height:30px;background:var(--brand);border-radius:7px;display:flex;align-items:center;justify-content:center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.5 2 6 5 6 8c0 4 4 7 6 10 2-3 6-6 6-10 0-3-2.5-6-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z"/></svg>
+    </div>
+    <div>
+      <div style="font-size:16px;font-weight:600;color:var(--color-text-primary)">KrishiMind <span style="font-weight:400;font-size:13px;color:var(--color-text-secondary)">— Go Live Console</span></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="pulse" style="background:var(--a400)"></span>
+    <span style="font-size:12px;color:var(--color-text-secondary)">Deployment Mode</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="sw('roadmap',this)">Launch Roadmap</div>
+  <div class="tab" onclick="sw('infra',this)">Cloud Infrastructure</div>
+  <div class="tab" onclick="sw('apis',this)">Live API Connections</div>
+  <div class="tab" onclick="sw('retrain',this)">Auto-Retraining</div>
+  <div class="tab" onclick="sw('monitor',this)">Monitoring</div>
+  <div class="tab" onclick="sw('cost',this)">Cost Calculator</div>
+  <div class="tab" onclick="sw('registry',this)">Farmer Registry</div>
+</div>
+
+<!-- ROADMAP -->
+<div id="roadmap" class="view active">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="mc"><div class="mc-lbl">Current Phase</div><div class="mc-val" style="font-size:15px">MVP Setup</div><div class="mc-sub">Week 1 of 8</div></div>
+    <div class="mc"><div class="mc-lbl">Next Milestone</div><div class="mc-val" style="font-size:14px">Data Pipeline</div><div class="mc-sub">Day 12 target</div></div>
+    <div class="mc"><div class="mc-lbl">Target Launch</div><div class="mc-val" style="font-size:14px">8 Weeks</div><div class="mc-sub">3 crops, 3 states</div></div>
+    <div class="mc"><div class="mc-lbl">Team Size (MVP)</div><div class="mc-val">6 People</div><div class="mc-sub">Min viable team</div></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="sec">Week-by-Week Deployment Plan</div>
+      <div class="phase-wrap" id="phases"></div>
+    </div>
+    <div>
+      <div class="sec">Team Composition — MVP Phase</div>
+      <div id="teamList" style="margin-top:.3rem"></div>
+      <div class="divider"></div>
+      <div class="sec">Go-Live Checklist</div>
+      <div id="checklist"></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">First 30 Days — Critical Path</div>
+  <div class="ch2"><canvas id="ganttChart"></canvas></div>
+</div>
+
+<!-- INFRA -->
+<div id="infra" class="view">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="mc"><div class="mc-lbl">Cloud Provider</div><div class="mc-val" style="font-size:14px">AWS Mumbai</div><div class="mc-sub">ap-south-1</div></div>
+    <div class="mc"><div class="mc-lbl">Kubernetes Nodes</div><div class="mc-val">24 nodes</div><div class="mc-sub">EKS cluster</div></div>
+    <div class="mc"><div class="mc-lbl">GPU Instances</div><div class="mc-val">4 × G4dn</div><div class="mc-sub">Model training</div></div>
+    <div class="mc"><div class="mc-lbl">Monthly Cost (MVP)</div><div class="mc-val" style="font-size:14px;color:var(--a400)">₹4.2L</div><div class="mc-sub">est. AWS spend</div></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="sec">Service Architecture Map</div>
+      <div id="infraCards"></div>
+    </div>
+    <div>
+      <div class="sec">Infrastructure as Code — Terraform Snippet</div>
+      <div class="code-block" id="tfCode"></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Docker Services — Compose Overview</div>
+  <div class="tbl">
+    <div class="row th" style="grid-template-columns:1.5fr 1fr 1fr 0.8fr 0.8fr"><div>Service</div><div>Image</div><div>Replicas</div><div>CPU</div><div>RAM</div></div>
+    <div id="dockerList"></div>
+  </div>
+</div>
+
+<!-- APIS -->
+<div id="apis" class="view">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="mc"><div class="mc-lbl">Live Integrations</div><div class="mc-val" style="color:var(--g600)">11/12</div><div class="mc-sub">1 pending licence</div></div>
+    <div class="mc"><div class="mc-lbl">AGMARKNET Status</div><div class="mc-val" style="font-size:14px;color:var(--g600)">Active</div><div class="mc-sub">124K records/day</div></div>
+    <div class="mc"><div class="mc-lbl">eNAM API</div><div class="mc-val" style="font-size:14px;color:var(--a400)">Pending</div><div class="mc-sub">Registration step</div></div>
+    <div class="mc"><div class="mc-lbl">IMD Weather</div><div class="mc-val" style="font-size:14px;color:var(--g600)">Active</div><div class="mc-sub">6-hr refresh</div></div>
+  </div>
+  <div class="sec">KrishiMind Platform APIs — Published Endpoints</div>
+  <div id="apiList"></div>
+  <div class="divider"></div>
+  <div class="sec">Integration Registration Checklist</div>
+  <div class="tbl">
+    <div class="row th" style="grid-template-columns:2fr 1.5fr 1fr 1fr"><div>API / Data Source</div><div>Registration Process</div><div>Cost</div><div>Status</div></div>
+    <div id="apiRegList"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Sample API Response — /predict/price</div>
+  <div class="code-block" id="sampleResponse"></div>
+</div>
+
+<!-- RETRAIN -->
+<div id="retrain" class="view">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="mc"><div class="mc-lbl">Retraining Schedule</div><div class="mc-val" style="font-size:14px">Weekly</div><div class="mc-sub">+ drift triggers</div></div>
+    <div class="mc"><div class="mc-lbl">Last Retrain</div><div class="mc-val" style="font-size:14px">Sun 02:00</div><div class="mc-sub">Auto-scheduled</div></div>
+    <div class="mc"><div class="mc-lbl">Training Data Size</div><div class="mc-val" style="font-size:14px">8.4M rows</div><div class="mc-sub">5 years history</div></div>
+    <div class="mc"><div class="mc-lbl">Train Duration</div><div class="mc-val" style="font-size:14px">2.4 hrs</div><div class="mc-sub">All 7 crops</div></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="sec">Auto-Retraining Pipeline — Steps</div>
+      <div id="retrainSteps"></div>
+    </div>
+    <div>
+      <div class="sec">Drift Detection — Model vs Reality (Last 30d)</div>
+      <div class="ch2"><canvas id="driftChart"></canvas></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">MLflow Experiment Tracking — Recent Runs</div>
+  <div class="tbl">
+    <div class="row th" style="grid-template-columns:1.2fr 1fr 1fr 1fr 0.8fr 0.8fr"><div>Run ID</div><div>Model</div><div>Crop</div><div>MAPE</div><div>Duration</div><div>Status</div></div>
+    <div id="mlflowRuns"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Retrain Trigger Logic</div>
+  <div class="code-block" id="triggerCode"></div>
+</div>
+
+<!-- MONITORING -->
+<div id="monitor" class="view">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="mc"><div class="mc-lbl">System Uptime</div><div class="mc-val" style="color:var(--g600)">99.94%</div><div class="mc-sub">Last 30 days</div></div>
+    <div class="mc"><div class="mc-lbl">API P99 Latency</div><div class="mc-val" style="color:var(--g600)">84ms</div><div class="mc-sub">Target: <200ms</div></div>
+    <div class="mc"><div class="mc-lbl">Data Freshness</div><div class="mc-val" style="color:var(--g600)">8 min</div><div class="mc-sub">AGMARKNET lag</div></div>
+    <div class="mc"><div class="mc-lbl">Open Incidents</div><div class="mc-val" style="color:var(--g600)">0</div><div class="mc-sub">All clear</div></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="sec">Service Health — Real-time Metrics</div>
+      <div id="healthMetrics" style="margin-top:.3rem"></div>
+    </div>
+    <div>
+      <div class="sec">API Request Volume — Last 24h (K/hr)</div>
+      <div class="ch2"><canvas id="reqChart"></canvas></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">SLA Dashboard</div>
+  <div class="tbl">
+    <div class="row th" style="grid-template-columns:2fr 1fr 1fr 1fr 0.8fr"><div>SLA Metric</div><div>Target</div><div>Current</div><div>Worst Day</div><div>Status</div></div>
+    <div id="slaList"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Model Prediction Error — Last 14 Days by Crop</div>
+  <div class="ch3"><canvas id="errorChart"></canvas></div>
+</div>
+
+<!-- COST CALC -->
+<div id="cost" class="view">
+  <div class="sec">Infrastructure Cost Calculator — Scale Your Deployment</div>
+  <div class="card" style="margin-top:.3rem">
+    <div class="grid2" style="gap:1.5rem;align-items:start">
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:.3rem">Registered Farmers (Lakhs)</div>
+        <div class="slider-wrap"><input type="range" min="1" max="1500" value="10" id="slFarmers" oninput="calcCost()"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary)"><span>1L</span><span id="slFarmersVal" style="font-weight:600">10L</span><span>1500L</span></div></div>
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin:.75rem 0 .3rem">Active Mandis</div>
+        <div class="slider-wrap"><input type="range" min="100" max="7240" value="500" id="slMandis" oninput="calcCost()"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary)"><span>100</span><span id="slMandisVal" style="font-weight:600">500</span><span>7,240</span></div></div>
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin:.75rem 0 .3rem">Crops Tracked</div>
+        <div class="slider-wrap"><input type="range" min="1" max="200" value="7" id="slCrops" oninput="calcCost()"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary)"><span>1</span><span id="slCropsVal" style="font-weight:600">7</span><span>200</span></div></div>
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin:.75rem 0 .3rem">Daily SMS Alerts (Lakhs)</div>
+        <div class="slider-wrap"><input type="range" min="0" max="200" value="5" id="slSMS" oninput="calcCost()"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary)"><span>0</span><span id="slSMSVal" style="font-weight:600">5L</span><span>200L</span></div></div>
+      </div>
+      <div>
+        <div class="cost-summary" id="costSummary"></div>
+        <div style="margin-top:.85rem" id="costBreakdown"></div>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Revenue vs Cost Projection — 36 Months</div>
+  <div class="leg">
+    <span><span class="ld" style="background:#3B6D11"></span>Revenue</span>
+    <span><span class="ld" style="background:#E24B4A"></span>Infra Cost</span>
+    <span><span class="ld" style="background:#378ADD"></span>Net Profit</span>
+  </div>
+  <div class="ch3"><canvas id="revenueChart"></canvas></div>
+</div>
+
+<!-- FARMER REGISTRY -->
+<div id="registry" class="view">
+  <div class="grid4" style="margin-bottom:1rem">
+    <div class="mc"><div class="mc-lbl">Total Registered</div><div class="mc-val">8.42L</div><div class="mc-sub">↑ 12% this month</div></div>
+    <div class="mc"><div class="mc-lbl">Verified via PM-KISAN</div><div class="mc-val" style="color:var(--g600)">6.18L</div><div class="mc-sub">73% verification rate</div></div>
+    <div class="mc"><div class="mc-lbl">Top State</div><div class="mc-val" style="font-size:14px">Rajasthan</div><div class="mc-sub">1.84L farmers</div></div>
+    <div class="mc"><div class="mc-lbl">Avg Land Holding</div><div class="mc-val" style="font-size:14px">2.4 acres</div><div class="mc-sub">per registered farmer</div></div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="sec">Registration Growth — Monthly</div>
+      <div class="ch2"><canvas id="regChart"></canvas></div>
+    </div>
+    <div>
+      <div class="sec">State-wise Registration</div>
+      <div class="ch2"><canvas id="stateRegChart"></canvas></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Farmer Onboarding Flow — Registration Steps</div>
+  <div id="onboardSteps"></div>
+  <div class="divider"></div>
+  <div class="sec">Crop Distribution — Registered Farmers</div>
+  <div class="ch"><canvas id="cropDistChart"></canvas></div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const C={};
+function sw(t,el){
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(t).classList.add('active');
+  setTimeout(()=>initTab(t),40);
+}
+function mkC(id,cfg){if(C[id])C[id].destroy();const ctx=document.getElementById(id);if(!ctx)return;C[id]=new Chart(ctx,cfg);}
+
+function initRoadmap(){
+  const phases=[
+    {week:'Week 1–2',dot:'var(--g400)',line:'var(--g200)',title:'Infrastructure Setup',sub:'AWS Mumbai (ap-south-1)',tasks:['Create AWS account, set billing alerts, enable Cost Explorer','Provision EKS cluster (3 nodes: t3.xlarge) + RDS PostgreSQL','Set up S3 buckets: raw-zone, silver-zone, gold-zone, models','Configure VPC, private subnets, NAT gateway, security groups','Install kubectl, helm, AWS CLI, Terraform on dev machines']},
+    {week:'Week 3–4',dot:'var(--b400)',line:'var(--b100)',title:'Data Pipeline Build',sub:'Kafka + Airflow + Spark',tasks:['Deploy Apache Airflow on EKS via helm chart','Write AGMARKNET scraper DAG — 3 crops × 3 states','Set up Kafka MSK cluster, create commodity-price topics','Build Spark ETL: clean → normalize → feature engineering','Load 5 years of AGMARKNET history to TimescaleDB']},
+    {week:'Week 5–6',dot:'var(--p400)',line:'var(--p100)',title:'Model Training',sub:'XGBoost + Prophet baseline',tasks:['Train XGBoost baseline for Mustard, Wheat, Soybean','Train Prophet seasonal model — tune with crop calendar','Set up MLflow tracking server on EC2','Validate: target MAPE < 8% on holdout test set','Deploy models to SageMaker endpoint (1 per crop)']},
+    {week:'Week 7',dot:'var(--a400)',line:'var(--a100)',title:'API + Dashboard Build',sub:'FastAPI + React',tasks:['Build FastAPI prediction service: /predict, /mandi, /forecast','Deploy React dashboard (farmer + trader views) to CloudFront','Integrate SMS alerts via Twilio (DLT registration needed)','Android app APK build — test on 3 low-end devices','Set up Prometheus + Grafana monitoring stack']},
+    {week:'Week 8',dot:'var(--r400)',line:'var(--g200)',title:'Pilot Launch',sub:'100 farmers, 3 states',tasks:['Onboard 100 pilot farmers in Rajasthan, MP, UP','Run end-to-end test: data → prediction → SMS delivery','Share dashboard access with 2 state agriculture officers','Collect feedback, fix critical bugs, measure MAPE vs actual','Go/No-Go decision for Phase 2 expansion']},
+  ];
+  document.getElementById('phases').innerHTML=phases.map((p,i)=>`
+    <div class="phase-item">
+      <div class="phase-label">${p.week}</div>
+      <div class="phase-line">
+        <div class="phase-dot" style="background:${p.dot};border-color:${p.dot}"></div>
+        ${i<phases.length-1?`<div class="phase-connector" style="background:${p.line}"></div>`:''}
+      </div>
+      <div class="phase-content">
+        <div class="phase-title">${p.title}</div>
+        <div class="phase-sub">${p.sub}</div>
+        <div class="phase-tasks">${p.tasks.map(t=>`<div class="ptask"><div class="ptask-dot" style="background:${p.dot}"></div>${t}</div>`).join('')}</div>
+      </div>
+    </div>`).join('');
+  const team=[
+    {role:'Data Engineer',count:1,resp:'Kafka, Spark, Airflow pipelines',tag:'bt'},
+    {role:'ML Engineer',count:1,resp:'Model training, MLflow, SageMaker',tag:'bp'},
+    {role:'Backend Developer',count:1,resp:'FastAPI, PostgreSQL, Redis APIs',tag:'bb'},
+    {role:'Frontend Developer',count:1,resp:'React dashboard, Android app',tag:'bg'},
+    {role:'DevOps Engineer',count:1,resp:'AWS EKS, Terraform, monitoring',tag:'ba'},
+    {role:'Domain Expert',count:1,resp:'Agri economics, mandi validation',tag:'br'},
+  ];
+  document.getElementById('teamList').innerHTML=team.map(t=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;border-bottom:.5px solid var(--color-border-tertiary);font-size:12.5px">
+      <div style="font-weight:500;color:var(--color-text-primary)">${t.role}</div>
+      <div style="color:var(--color-text-secondary);font-size:11px;flex:1;padding:0 .5rem">${t.resp}</div>
+      <span class="badge ${t.tag}">×${t.count}</span>
+    </div>`).join('');
+  const checks=[
+    {ok:true,item:'AWS account + billing alerts set'},
+    {ok:true,item:'AGMARKNET API access registered'},
+    {ok:false,item:'eNAM API key from NIC received'},
+    {ok:true,item:'IMD data portal access granted'},
+    {ok:false,item:'Twilio DLT SMS registration complete'},
+    {ok:false,item:'APEDA registration as Technology Partner'},
+    {ok:true,item:'Domain krishimind.in registered'},
+    {ok:false,item:'SSL certificate provisioned'},
+    {ok:true,item:'GitHub repo + CI/CD pipeline ready'},
+    {ok:false,item:'First pilot farmer cohort onboarded'},
+  ];
+  document.getElementById('checklist').innerHTML=checks.map(c=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:.3rem 0;font-size:12px">
+      <div style="width:16px;height:16px;border-radius:50%;background:${c.ok?'var(--g100)':'var(--color-border-tertiary)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        ${c.ok?'<span style="color:var(--g600);font-size:9px;font-weight:700">✓</span>':'<span style="color:var(--color-text-secondary);font-size:8px">○</span>'}
+      </div>
+      <span style="color:${c.ok?'var(--color-text-primary)':'var(--color-text-secondary)'}${c.ok?';text-decoration:line-through':''}">${c.item}</span>
+    </div>`).join('');
+  const tasks=['Infra Setup','Data Pipeline','Model Training','API Build','Dashboard','App Build','Monitoring','Pilot Launch'];
+  const starts=[0,8,16,22,24,24,28,30];
+  const lens=[8,10,8,6,8,8,4,4];
+  const colors=['#185FA5','#3B6D11','#534AB7','#0F6E56','#639922','#BA7517','#378ADD','#E24B4A'];
+  mkC('ganttChart',{type:'bar',data:{labels:tasks,datasets:[
+    {label:'Offset',data:starts,backgroundColor:'transparent',borderWidth:0},
+    {label:'Duration (days)',data:lens,backgroundColor:colors,borderRadius:4}
+  ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>`Day ${starts[v.dataIndex]}–${starts[v.dataIndex]+lens[v.dataIndex]}`}}},scales:{x:{stacked:true,min:0,max:34,title:{display:true,text:'Days from start'},grid:{color:'rgba(0,0,0,0.04)'}},y:{stacked:true,grid:{display:false}}}}});
+}
+
+function initInfra(){
+  const cards=[
+    {name:'EKS Cluster (Kubernetes)',spec:'24 nodes • t3.xlarge • ap-south-1',use:62,color:'var(--b400)'},
+    {name:'SageMaker Endpoints',spec:'7 endpoints × 1 crop each • ml.m5.large',use:45,color:'var(--p400)'},
+    {name:'RDS PostgreSQL (TimescaleDB)',spec:'db.r6g.2xlarge • 2TB SSD • Multi-AZ',use:71,color:'var(--g400)'},
+    {name:'Amazon MSK (Kafka)',spec:'3 broker • kafka.m5.large • 2TB EBS',use:38,color:'var(--t400)'},
+    {name:'S3 Data Lake',spec:'Raw + Silver + Gold zones • 12TB',use:28,color:'var(--a400)'},
+    {name:'CloudFront CDN',spec:'India edge locations • Dashboard + API',use:54,color:'var(--r400)'},
+  ];
+  document.getElementById('infraCards').innerHTML=cards.map(c=>`
+    <div class="infra-card">
+      <div class="infra-head">
+        <div><div class="infra-name">${c.name}</div><div class="infra-spec">${c.spec}</div></div>
+        <span class="badge bg">${c.use}% used</span>
+      </div>
+      <div class="bar"><div class="bar-fill" style="width:${c.use}%;background:${c.color}"></div></div>
+    </div>`).join('');
+  document.getElementById('tfCode').innerHTML=`<span class="code-comment"># terraform/main.tf — KrishiMind MVP</span>
+<span class="code-key">provider</span> <span class="code-str">"aws"</span> {
+  region = <span class="code-str">"ap-south-1"</span>  <span class="code-comment"># Mumbai</span>
+}
+
+<span class="code-key">module</span> <span class="code-str">"eks"</span> {
+  source  = <span class="code-str">"terraform-aws-modules/eks/aws"</span>
+  cluster_name    = <span class="code-str">"krishimind-prod"</span>
+  cluster_version = <span class="code-str">"1.28"</span>
+  node_groups = {
+    main = {
+      instance_types = [<span class="code-str">"t3.xlarge"</span>]
+      min_size = <span class="code-val">3</span>; max_size = <span class="code-val">50</span>
+    }
+    gpu = {
+      instance_types = [<span class="code-str">"g4dn.xlarge"</span>]
+      min_size = <span class="code-val">0</span>; max_size = <span class="code-val">8</span>
+    }
+  }
+}
+
+<span class="code-key">resource</span> <span class="code-str">"aws_db_instance"</span> <span class="code-str">"timescale"</span> {
+  engine         = <span class="code-str">"postgres"</span>
+  engine_version = <span class="code-str">"15.3"</span>
+  instance_class = <span class="code-str">"db.r6g.2xlarge"</span>
+  multi_az       = <span class="code-val">true</span>
+}`;
+  const docker=[
+    {svc:'krishimind-api',img:'krishimind/api:1.2.4',rep:'3',cpu:'500m',ram:'1Gi'},
+    {svc:'data-ingestion',img:'krishimind/ingestion:1.1.0',rep:'2',cpu:'250m',ram:'512Mi'},
+    {svc:'prediction-worker',img:'krishimind/predict:1.2.1',rep:'5',cpu:'1000m',ram:'2Gi'},
+    {svc:'alert-engine',img:'krishimind/alerts:1.0.8',rep:'2',cpu:'500m',ram:'1Gi'},
+    {svc:'airflow-webserver',img:'apache/airflow:2.7.2',rep:'1',cpu:'500m',ram:'2Gi'},
+    {svc:'airflow-scheduler',img:'apache/airflow:2.7.2',rep:'1',cpu:'500m',ram:'1Gi'},
+    {svc:'grafana',img:'grafana/grafana:10.2',rep:'1',cpu:'250m',ram:'512Mi'},
+    {svc:'redis-cache',img:'redis:7.2-alpine',rep:'1',cpu:'250m',ram:'512Mi'},
+  ];
+  document.getElementById('dockerList').innerHTML=docker.map((d,i)=>`
+    <div class="row" style="grid-template-columns:1.5fr 1fr 1fr 0.8fr 0.8fr;${i%2?'background:var(--color-background-secondary)':''}">
+      <div style="font-weight:500">${d.svc}</div>
+      <div style="font-family:monospace;font-size:11px;color:var(--color-text-secondary)">${d.img}</div>
+      <div style="text-align:center">${d.rep}</div>
+      <div>${d.cpu}</div><div>${d.ram}</div>
+    </div>`).join('');
+}
+
+function initAPIs(){
+  const apis=[
+    {method:'GET',path:'/api/v1/predict/price',desc:'Get AI price prediction for a crop-mandi combination. Params: crop_code, mandi_id, horizon (1d|7d|30d)'},
+    {method:'GET',path:'/api/v1/mandi/prices',desc:'Get current and historical mandi prices. Params: state, commodity, date_range'},
+    {method:'GET',path:'/api/v1/forecast/seasonal',desc:'Get seasonal outlook for a crop and region. Returns price band, confidence, sell window.'},
+    {method:'POST',path:'/api/v1/alerts/subscribe',desc:'Subscribe a farmer phone to price alerts. Body: phone, crop_code, mandi_id, threshold.'},
+    {method:'GET',path:'/api/v1/export/fob',desc:'Get FOB price prediction for export-grade commodity. Params: commodity, port (kandla|nhava_sheva)'},
+    {method:'GET',path:'/api/v1/govt/msp-status',desc:'Get MSP adequacy status for all mandis. Returns count below MSP, state-wise breakdown.'},
+    {method:'POST',path:'/api/v1/farmer/register',desc:'Register a new farmer. Body: phone, name, state, crops[], primary_mandi_id, pm_kisan_id.'},
+    {method:'GET',path:'/api/v1/satellite/ndvi',desc:'Get NDVI crop health index for a district. Params: district_code, commodity, date.'},
+  ];
+  document.getElementById('apiList').innerHTML=apis.map(a=>`
+    <div class="api-block">
+      <div><span class="api-method ${a.method==='GET'?'get':'post'}">${a.method}</span><span class="api-path">${a.path}</span></div>
+      <div class="api-desc">${a.desc}</div>
+    </div>`).join('');
+  const regs=[
+    {src:'AGMARKNET',proc:'Email to agricoop@nic.in, request data access MOU',cost:'Free',status:'ok'},
+    {src:'eNAM API',proc:'Register at enam.trade.gov.in → Technology Partner Portal',cost:'Free',status:'pending'},
+    {src:'IMD Data Portal',proc:'Apply at imdpune.gov.in/data → Research/Commercial license',cost:'₹12,000/yr',status:'ok'},
+    {src:'Google Earth Engine',proc:'Sign up at earthengine.google.com → Commercial license for prod',cost:'$4,000/yr',status:'ok'},
+    {src:'Open-Meteo API',proc:'Direct API — no registration for <10K calls/day',cost:'Free tier',status:'ok'},
+    {src:'Twilio SMS (DLT)',proc:'Register on TRAI DLT portal, get sender ID, Twilio account',cost:'₹0.18/SMS',status:'pending'},
+    {src:'Exotel IVR',proc:'Sign up at exotel.com, verify business, get virtual number',cost:'₹0.25/min',status:'pending'},
+    {src:'CMIE / Bloomberg',proc:'Commercial data licensing contract — 3-6 month process',cost:'₹15L/yr',status:'pending'},
+  ];
+  document.getElementById('apiRegList').innerHTML=regs.map((r,i)=>`
+    <div class="row" style="grid-template-columns:2fr 1.5fr 1fr 1fr;${i%2?'background:var(--color-background-secondary)':''}">
+      <div style="font-weight:500">${r.src}</div>
+      <div style="font-size:11px;color:var(--color-text-secondary)">${r.proc}</div>
+      <div style="font-size:11px">${r.cost}</div>
+      <div><span class="badge ${r.status==='ok'?'bg':'ba'}">${r.status==='ok'?'Done':'Pending'}</span></div>
+    </div>`).join('');
+  document.getElementById('sampleResponse').innerHTML=`<span class="code-comment">// GET /api/v1/predict/price?crop=mustard&mandi=jaipur&horizon=7d</span>
+{
+  <span class="code-key">"status"</span>: <span class="code-str">"success"</span>,
+  <span class="code-key">"crop"</span>: <span class="code-str">"mustard"</span>,
+  <span class="code-key">"mandi"</span>: <span class="code-str">"Jaipur, Rajasthan"</span>,
+  <span class="code-key">"current_price"</span>: <span class="code-val">5280</span>,
+  <span class="code-key">"forecast"</span>: {
+    <span class="code-key">"horizon"</span>: <span class="code-str">"7d"</span>,
+    <span class="code-key">"predicted_price"</span>: <span class="code-val">5460</span>,
+    <span class="code-key">"lower_bound"</span>: <span class="code-val">5340</span>,
+    <span class="code-key">"upper_bound"</span>: <span class="code-val">5580</span>,
+    <span class="code-key">"confidence_score"</span>: <span class="code-val">82</span>,
+    <span class="code-key">"direction"</span>: <span class="code-str">"up"</span>,
+    <span class="code-key">"recommendation"</span>: <span class="code-str">"WAIT_7_DAYS"</span>,
+    <span class="code-key">"reason"</span>: <span class="code-str">"Arrival volume down 18%. Export demand firm. Conf: High."</span>
+  },
+  <span class="code-key">"model_ensemble"</span>: {
+    <span class="code-key">"xgboost_weight"</span>: <span class="code-val">0.38</span>,
+    <span class="code-key">"lstm_weight"</span>: <span class="code-val">0.32</span>,
+    <span class="code-key">"prophet_weight"</span>: <span class="code-val">0.18</span>
+  }
+}`;
+}
+
+function initRetrain(){
+  const steps=[
+    {n:1,c:'var(--b400)',title:'Drift Detector runs daily',body:'Evidently AI compares last 7 days predictions vs actuals. If MAPE > 8% for any model, retrain flag set.'},
+    {n:2,c:'var(--p400)',title:'Airflow triggers retraining DAG',body:'Weekly cron: Sunday 01:00 IST. Also triggered on-demand if drift flag raised. SQS message to ML worker.'},
+    {n:3,c:'var(--a400)',title:'Feature store refreshed',body:'Feast materializes latest features from TimescaleDB → Redis online store. Ensures training uses freshest data.'},
+    {n:4,c:'var(--g400)',title:'Model training on SageMaker',body:'XGBoost, LSTM, Prophet trained in parallel. G4dn.xlarge GPU node for LSTM. ~40 min per crop model.'},
+    {n:5,c:'var(--t400)',title:'MLflow validation gate',body:'New model must beat current production model MAPE by ≥0.5%. If not, old model retained. Alert to ML team.'},
+    {n:6,c:'var(--g600)',title:'Blue-Green deployment',body:'New model deployed to SageMaker staging endpoint. 10% traffic shifted. If metrics stable, 100% cutover.'},
+    {n:7,c:'var(--brand)',title:'Monitoring reset + notify',body:'MAPE baseline reset. MLflow run logged. Slack notification to team: "Models updated. New ensemble MAPE: X%".'},
+  ];
+  document.getElementById('retrainSteps').innerHTML=steps.map(s=>`
+    <div class="retrain-step">
+      <div class="rs-num" style="background:${s.c};color:#fff">${s.n}</div>
+      <div><div class="rs-title">${s.title}</div><div class="rs-body">${s.body}</div></div>
+    </div>`).join('');
+  const days30=[...Array(30)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-29+i);return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})});
+  const actual=[5100,5140,5200,5180,5210,5240,5220,5260,5280,5300,5320,5290,5310,5340,5360,5380,5400,5420,5440,5410,5430,5460,5450,5470,5490,5510,5480,5500,5520,5540];
+  const pred=actual.map((v,i)=>v+[-40,20,-30,50,-20,30,-10,40,-25,15][i%10]);
+  mkC('driftChart',{type:'line',data:{labels:days30,datasets:[
+    {label:'Actual Price',data:actual,borderColor:'#3B6D11',tension:0.3,pointRadius:0,borderWidth:2},
+    {label:'Predicted',data:pred,borderColor:'#378ADD',borderDash:[4,2],tension:0.3,pointRadius:0,borderWidth:1.5}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'₹'+v.toLocaleString()},grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false},ticks:{maxTicksLimit:7,font:{size:10}}}}}});
+  const runs=[
+    {id:'run_0421',model:'XGBoost',crop:'Mustard',mape:'5.1%',dur:'12 min',ok:true},
+    {id:'run_0420',model:'LSTM',crop:'Mustard',mape:'5.9%',dur:'38 min',ok:true},
+    {id:'run_0419',model:'Prophet',crop:'Wheat',mape:'7.3%',dur:'8 min',ok:true},
+    {id:'run_0418',model:'XGBoost',crop:'Soybean',mape:'6.2%',dur:'11 min',ok:true},
+    {id:'run_0417',model:'LSTM',crop:'Wheat',mape:'9.1%',dur:'41 min',ok:false},
+    {id:'run_0416',model:'XGBoost',crop:'Cotton',mape:'6.8%',dur:'13 min',ok:true},
+  ];
+  document.getElementById('mlflowRuns').innerHTML=runs.map((r,i)=>`
+    <div class="row" style="grid-template-columns:1.2fr 1fr 1fr 1fr 0.8fr 0.8fr;${i%2?'background:var(--color-background-secondary)':''}">
+      <div style="font-family:monospace;font-size:11px">${r.id}</div>
+      <div>${r.model}</div><div>${r.crop}</div>
+      <div style="font-weight:600;color:${parseFloat(r.mape)<8?'var(--g600)':'var(--r400)'}">${r.mape}</div>
+      <div style="color:var(--color-text-secondary)">${r.dur}</div>
+      <div><span class="badge ${r.ok?'bg':'br'}">${r.ok?'Promoted':'Rejected'}</span></div>
+    </div>`).join('');
+  document.getElementById('triggerCode').innerHTML=`<span class="code-comment"># drift_monitor.py — runs daily via Airflow</span>
+<span class="code-key">def</span> check_model_drift(crop, window_days=<span class="code-val">7</span>):
+    recent = get_predictions_vs_actual(crop, window_days)
+    mape = compute_mape(recent[<span class="code-str">'actual'</span>], recent[<span class="code-str">'predicted'</span>])
+    
+    <span class="code-key">if</span> mape > <span class="code-val">8.0</span>:  <span class="code-comment"># threshold</span>
+        log.warning(<span class="code-str">f"Drift detected: {crop} MAPE={mape:.2f}%"</span>)
+        trigger_retrain(crop, priority=<span class="code-str">"high"</span>)
+        notify_slack(<span class="code-str">f"DRIFT: {crop} model needs retraining"</span>)
+    
+    <span class="code-key">elif</span> is_weekly_schedule():
+        trigger_retrain(crop, priority=<span class="code-str">"normal"</span>)`;
+}
+
+function initMonitor(){
+  const metrics=[
+    {name:'API Gateway (FastAPI)',val:'99.97%',pct:99.97,col:'var(--g400)',status:'ok'},
+    {name:'Kafka MSK Lag',val:'0.4 sec',pct:96,col:'var(--g400)',status:'ok'},
+    {name:'Airflow DAG Success Rate',val:'98.2%',pct:98.2,col:'var(--g400)',status:'ok'},
+    {name:'SageMaker Inference',val:'84ms P99',pct:92,col:'var(--g400)',status:'ok'},
+    {name:'TimescaleDB Write Lag',val:'2.1ms',pct:97,col:'var(--g400)',status:'ok'},
+    {name:'Redis Cache Hit Rate',val:'94.3%',pct:94.3,col:'var(--g400)',status:'ok'},
+    {name:'AGMARKNET Scraper',val:'8 min lag',pct:82,col:'var(--a200)',status:'warn'},
+    {name:'SMS Delivery Rate (Twilio)',val:'97.3%',pct:97.3,col:'var(--g400)',status:'ok'},
+  ];
+  document.getElementById('healthMetrics').innerHTML=metrics.map(m=>`
+    <div class="mon-row">
+      <div class="mon-name">${m.name}</div>
+      <div class="mon-val" style="color:${m.status==='ok'?'var(--g600)':'var(--a400)'}">${m.val}</div>
+      <div class="mon-bar"><div class="mon-fill" style="width:${m.pct}%;background:${m.col}"></div></div>
+      <div class="mon-status"><span class="badge ${m.status==='ok'?'bg':'ba'}">${m.status==='ok'?'OK':'WATCH'}</span></div>
+    </div>`).join('');
+  const hours=[...Array(24)].map((_,i)=>i<10?'0'+i+':00':i+':00');
+  const reqs=[8,5,4,3,2,4,18,42,68,84,88,92,94,90,88,86,84,78,72,64,52,38,24,14];
+  mkC('reqChart',{type:'line',data:{labels:hours,datasets:[{data:reqs,borderColor:'#3B6D11',backgroundColor:'rgba(59,109,17,0.08)',fill:true,tension:0.4,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'K requests/hr'},grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false},ticks:{maxTicksLimit:8,font:{size:10}}}}}});
+  const slas=[
+    {name:'API Response Time P99',target:'<200ms',cur:'84ms',worst:'142ms',ok:true},
+    {name:'Price Data Freshness',target:'<15 min',cur:'8 min',worst:'22 min',ok:true},
+    {name:'Prediction Availability',target:'>99.5%',cur:'99.94%',worst:'99.81%',ok:true},
+    {name:'SMS Alert Delivery Rate',target:'>95%',cur:'97.3%',worst:'93.2%',ok:true},
+    {name:'Forecast MAPE (7-day)',target:'<8%',cur:'4.8%',worst:'7.1%',ok:true},
+    {name:'Model Retraining Cadence',target:'Weekly',cur:'On schedule',worst:'2d delay',ok:true},
+  ];
+  document.getElementById('slaList').innerHTML=slas.map((s,i)=>`
+    <div class="row" style="grid-template-columns:2fr 1fr 1fr 1fr 0.8fr;${i%2?'background:var(--color-background-secondary)':''}">
+      <div style="font-weight:500">${s.name}</div>
+      <div style="color:var(--color-text-secondary)">${s.target}</div>
+      <div style="font-weight:600;color:var(--g600)">${s.cur}</div>
+      <div style="color:var(--color-text-secondary)">${s.worst}</div>
+      <div><span class="badge bg">Met</span></div>
+    </div>`).join('');
+  const crops7=['Mustard','Wheat','Soybean','Rice','Maize','Cotton','Tur Dal'];
+  const days14=[...Array(14)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-13+i);return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})});
+  const datasets=crops7.map((c,i)=>{
+    const colors=['#3B6D11','#639922','#185FA5','#1D9E75','#BA7517','#7F77DD','#E24B4A'];
+    const base=[5.2,4.8,6.1,5.8,7.2,6.4,5.9];
+    return{label:c,data:[...Array(14)].map((_,j)=>+(base[i]+Math.random()*1.5-0.7).toFixed(1)),borderColor:colors[i],tension:0.4,pointRadius:2,fill:false};
+  });
+  mkC('errorChart',{type:'line',data:{labels:days14,datasets:[...datasets,{label:'Threshold',data:Array(14).fill(8),borderColor:'#E24B4A',borderDash:[5,5],pointRadius:0,fill:false,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'MAPE %'},min:0,max:12,grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false},ticks:{maxTicksLimit:7,font:{size:10}}}}}});
+}
+
+function calcCost(){
+  const f=+document.getElementById('slFarmers').value;
+  const m=+document.getElementById('slMandis').value;
+  const cr=+document.getElementById('slCrops').value;
+  const s=+document.getElementById('slSMS').value;
+  document.getElementById('slFarmersVal').textContent=f+'L';
+  document.getElementById('slMandisVal').textContent=m.toLocaleString('en-IN');
+  document.getElementById('slCropsVal').textContent=cr;
+  document.getElementById('slSMSVal').textContent=s+'L';
+  const eks=Math.round(80000+m*10+cr*2000);
+  const db=Math.round(40000+m*5);
+  const ml=Math.round(60000+cr*5000);
+  const sms_cost=Math.round(s*100*18);
+  const cdn=Math.round(20000+f*10);
+  const misc=Math.round(30000);
+  const total=eks+db+ml+sms_cost+cdn+misc;
+  const rev_farmer=Math.round(f*0.01*199);
+  const rev_trader=Math.round(Math.min(m*5,5000)*499);
+  const rev_govt=Math.round(Math.min(Math.floor(m/200)*5000000,75000000));
+  const total_rev=rev_farmer+rev_trader+rev_govt;
+  document.getElementById('costSummary').innerHTML=`
+    <div><div style="font-size:11px;color:var(--g800)">Monthly Cost</div><div style="font-size:22px;font-weight:700;color:var(--g600)">₹${(total/100000).toFixed(1)}L</div></div>
+    <div style="text-align:right"><div style="font-size:11px;color:var(--g800)">Est. Revenue</div><div style="font-size:22px;font-weight:700;color:var(--brand)">₹${(total_rev/100000).toFixed(1)}L</div></div>`;
+  const items=[
+    {label:'EKS + Compute',val:eks},
+    {label:'RDS / TimescaleDB',val:db},
+    {label:'SageMaker ML',val:ml},
+    {label:'SMS (Twilio/Karix)',val:sms_cost},
+    {label:'CDN + Data Transfer',val:cdn},
+    {label:'Misc (Kafka, S3, etc.)',val:misc},
+  ];
+  const maxVal=Math.max(...items.map(i=>i.val));
+  document.getElementById('costBreakdown').innerHTML=items.map(it=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:.3rem 0;font-size:12px">
+      <div style="width:150px;color:var(--color-text-secondary)">${it.label}</div>
+      <div style="flex:1;height:6px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden">
+        <div style="width:${(it.val/maxVal*100).toFixed(0)}%;height:100%;background:var(--b400);border-radius:3px"></div>
+      </div>
+      <div style="width:60px;text-align:right;font-weight:500">₹${Math.round(it.val/1000)}K</div>
+    </div>`).join('');
+}
+
+function initCostChart(){
+  const months=[...Array(36)].map((_,i)=>{const d=new Date(2026,3+i,1);return d.toLocaleDateString('en-IN',{month:'short',year:'2-digit'})});
+  const cost=months.map((_,i)=>Math.round((420000+i*40000)/1000));
+  const rev=months.map((_,i)=>i<3?Math.round(80000/1000):Math.round((80000+(i-3)*280000)/1000));
+  const net=rev.map((r,i)=>r-cost[i]);
+  mkC('revenueChart',{type:'line',data:{labels:months,datasets:[
+    {label:'Revenue',data:rev,borderColor:'#3B6D11',backgroundColor:'rgba(59,109,17,0.07)',fill:true,tension:0.4,pointRadius:0},
+    {label:'Cost',data:cost,borderColor:'#E24B4A',tension:0.4,pointRadius:0},
+    {label:'Net',data:net,borderColor:'#378ADD',tension:0.4,pointRadius:0,borderDash:[4,2]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'₹ (Thousands)'},grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false},ticks:{maxTicksLimit:12,font:{size:10}}}}}});
+}
+
+function initRegistry(){
+  const months=['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const regs=[18000,26000,41000,58000,84000,110000,142000,178000,218000,262000];
+  mkC('regChart',{type:'bar',data:{labels:months,datasets:[{data:regs.map(v=>Math.round(v/1000)),backgroundColor:months.map((_,i)=>i===months.length-1?'#3B6D11':'#97C459'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Registrations (K)'},grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false}}}}});
+  const states=['Rajasthan','MP','Punjab','Haryana','UP','Maharashtra','Gujarat','Others'];
+  const vals=[184,142,98,76,124,68,54,96];
+  mkC('stateRegChart',{type:'doughnut',data:{labels:states,datasets:[{data:vals,backgroundColor:['#3B6D11','#639922','#97C459','#185FA5','#378ADD','#BA7517','#7F77DD','#BFC9CA'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false}}}});
+  const steps=[
+    {n:1,col:'var(--b400)',title:'Dial / Download',body:'Farmer calls toll-free 1800-XXX-XXXX or downloads KrishiMind Kisan App from Play Store.'},
+    {n:2,col:'var(--p400)',title:'Language Selection',body:'IVR or app asks: Choose language — Hindi, Marathi, Punjabi, Gujarati, Telugu... (12 options).'},
+    {n:3,col:'var(--a400)',title:'Phone + OTP Verify',body:'Enter 10-digit mobile number. OTP sent via SMS. Verified in <30 seconds.'},
+    {n:4,col:'var(--g400)',title:'PM-KISAN ID Link (Optional)',body:'Link PM-KISAN beneficiary ID for instant verification and premium access via government subsidy.'},
+    {n:5,col:'var(--t400)',title:'Crop + Mandi Selection',body:'Select crops grown (up to 5). Select nearest mandis (up to 3). GPS auto-suggests closest mandis.'},
+    {n:6,col:'var(--brand)',title:'Alert Preferences',body:'Set price alert threshold (e.g., alert when Mustard > ₹5,500). Choose: SMS only, App, or both.'},
+  ];
+  document.getElementById('onboardSteps').innerHTML=`<div style="display:flex;flex-direction:column;gap:0;margin-top:.3rem">`+steps.map((s,i)=>`
+    <div style="display:grid;grid-template-columns:28px 1fr;gap:0;align-items:stretch">
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div style="width:22px;height:22px;border-radius:50%;background:${s.col};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">${s.n}</div>
+        ${i<steps.length-1?`<div style="width:2px;flex:1;background:var(--color-border-tertiary);margin-top:2px"></div>`:''}
+      </div>
+      <div style="padding:0 0 .85rem .75rem">
+        <div style="font-size:13px;font-weight:600;color:var(--color-text-primary)">${s.title}</div>
+        <div style="font-size:11.5px;color:var(--color-text-secondary);margin-top:2px">${s.body}</div>
+      </div>
+    </div>`).join('')+'</div>';
+  const crops7=['Mustard','Wheat','Rice','Tur Dal','Soybean','Maize','Cotton'];
+  const cropVals=[28,24,18,12,9,6,3];
+  mkC('cropDistChart',{type:'bar',data:{labels:crops7,datasets:[{data:cropVals,backgroundColor:['#3B6D11','#639922','#97C459','#185FA5','#1D9E75','#BA7517','#7F77DD'],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>v.raw+'% of registered farmers'}}},scales:{y:{title:{display:true,text:'% of registered farmers'},grid:{color:'rgba(0,0,0,0.04)'},max:35},x:{grid:{display:false}}}}});
+}
+
+function initTab(t){
+  if(t==='roadmap') initRoadmap();
+  else if(t==='infra') initInfra();
+  else if(t==='apis') initAPIs();
+  else if(t==='retrain') initRetrain();
+  else if(t==='monitor') initMonitor();
+  else if(t==='cost'){calcCost();initCostChart();}
+  else if(t==='registry') initRegistry();
+}
+initRoadmap();
+</script>
